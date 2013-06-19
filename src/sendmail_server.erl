@@ -60,7 +60,10 @@ handle_call({send_data, From, To, Data, Opts}, _From, State) ->
     {reply, send_data(From, To, Data, Opts), State};
 
 handle_call({send_data, From, Data, Opts}, _From, State) ->
-    {reply, send_data(From, Data, Opts), State}.
+    {reply, send_data(From, Data, Opts), State};
+
+handle_call({send, To, From, Subject, Message, Opts}, _From, State) ->
+    {reply, send(To, From, Subject, Message, Opts), State}.
 
 handle_cast({send, To, From, Subject, Message, Opts}, State) ->
     send(To, From, Subject, Message, Opts),

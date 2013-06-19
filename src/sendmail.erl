@@ -4,6 +4,8 @@
         , create/5
         , send/4
         , send/5
+        , post/4
+        , post/5
         , send_data/3
         , send_data/4
         ]).
@@ -20,6 +22,12 @@ send(To, From, Subject, Message) ->
     send(To, From, Subject, Message, []).
 
 send(To, From, Subject, Message, Opts) ->
+    gen_server:call(?SERVER, {send, To, From, Subject, Message, Opts}).
+
+post(To, From, Subject, Message) ->
+    post(To, From, Subject, Message, []).
+
+post(To, From, Subject, Message, Opts) ->
     gen_server:cast(?SERVER, {send, To, From, Subject, Message, Opts}).
 
 %% returns {ExitCode, CmdOutput}
