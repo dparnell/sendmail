@@ -1,0 +1,12 @@
+{application, sendmail,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { sendmail_app, []}},
+  {env, []}
+ ]}.

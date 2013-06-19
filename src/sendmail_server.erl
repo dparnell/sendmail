@@ -1,12 +1,14 @@
-%% File   : sendmail.erl
+%% File   : sendmail_server.erl
 %% Author : Klacke <klacke@hyber.org>,
 %%          Johan Bevemyr <jb@son.bevemyr.com>,
 %%          Håkan Stenholm <hokan@klarna.com>,
-%%          Richard Carlsson <richardc@klarna.com>
+%%          Richard Carlsson <richardc@klarna.com>,
+%%          Daniel Parnell <me@danielparnell.com>
 %%
 %% Description : send mail using local sendmail; based on sendmail.erl
 %% by Klacke and smtp.erl by Johan Bevemyr, with code for RFC1522 by
 %% Håkan Stenholm. Major cleanup and rewrites by Richard Carlsson.
+%% Hacked into a gen_server and rebar setup by Daniel Parnell
 %%
 %% Copyright (C) Johan Bevemyr 2004, Klacke <klacke@hyber.org> 2005,
 %% Håkan Stenholm 2009, Richard Carlsson 2009.
@@ -32,30 +34,55 @@
 
 %% TODO: allow list of recipients?
 
--module(sendmail).
+-module(sendmail_server).
+-behaviour(gen_server).
 
--export([ create/4
-        , create/5
-        , send/4
-        , send/5
-        , send_data/3
-        , send_data/4
+-define(SERVER, ?MODULE).
+
+-export([
+         start_link/0
         ]).
+
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+
+start_link() ->
+    gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+%%% gen_server functions
+
+init([]) ->
+    {ok, []}.
+
+handle_call({create, To, From, Subject, Message, Opts}, _From, State) ->
+    {reply, create(To, From, Subject, Message, Opts), State};
+
+handle_call({send_data, From, To, Data, Opts}, _From, State) ->
+    {reply, send_data(From, To, Data, Opts), State};
+
+handle_call({send_data, From, Data, Opts}, _From, State) ->
+    {reply, send_data(From, Data, Opts), State}.
+
+handle_cast({send, To, From, Subject, Message, Opts}, State) ->
+    send(To, From, Subject, Message, Opts),
+    {noreply, State}.
+
+handle_info(_Message, State) ->
+     {noreply, State}.
+
+terminate(_Reason, _) ->
+    ok.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
+
+%%%
 
 -include_lib("eunit/include/eunit.hrl").
 
 -define(NL, "\n").    % unix sendmail expects LF-terminated lines
 
-%% API
-
-create(To, From, Subject, Message) ->
-    create(To, From, Subject, Message, []).
-
 create(To, From, Subject, Message, Opts) ->
     data(To, From, Subject, Message, Opts).
-
-send(To, From, Subject, Message) ->
-    send(To, From, Subject, Message, []).
 
 send(To, From, Subject, Message, Opts) ->
     send_data(To, From, create(From, To, Subject, Message, Opts), Opts).

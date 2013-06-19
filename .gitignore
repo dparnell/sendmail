@@ -1,0 +1,8 @@
+.eunit
+deps
+ebin
+*~
+.DS_Store
+*.dump
+*#
+.#*
