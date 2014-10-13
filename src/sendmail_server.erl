@@ -1,17 +1,18 @@
+%% -*- coding: utf-8 -*-
 %% File   : sendmail_server.erl
 %% Author : Klacke <klacke@hyber.org>,
 %%          Johan Bevemyr <jb@son.bevemyr.com>,
-%%          Håkan Stenholm <hokan@klarna.com>,
+%%          HÃ¥kan Stenholm <hokan@klarna.com>,
 %%          Richard Carlsson <richardc@klarna.com>,
 %%          Daniel Parnell <me@danielparnell.com>
 %%
 %% Description : send mail using local sendmail; based on sendmail.erl
 %% by Klacke and smtp.erl by Johan Bevemyr, with code for RFC1522 by
-%% Håkan Stenholm. Major cleanup and rewrites by Richard Carlsson.
+%% HÃ¥kan Stenholm. Major cleanup and rewrites by Richard Carlsson.
 %% Hacked into a gen_server and rebar setup by Daniel Parnell
 %%
 %% Copyright (C) Johan Bevemyr 2004, Klacke <klacke@hyber.org> 2005,
-%% Håkan Stenholm 2009, Richard Carlsson 2009.
+%% HÃ¥kan Stenholm 2009, Richard Carlsson 2009.
 %%
 %% Permission is hereby granted, free of charge, to any person obtaining a
 %% copy of this software and associated documentation files (the
@@ -351,7 +352,7 @@ mk_text_header_test_() ->
     [
      %% based on Thunderbird output
      ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6?=",
-                   mk_text_header("Subject", "åäö")),
+                   mk_text_header("Subject", "Ã¥Ã¤Ã¶")),
 
      ?_assertEqual(
         "Subject: =?ISO-8859-1?Q?=E5=E4=F6twequiiiirrrweyqruyqitrrqw"
@@ -362,7 +363,7 @@ mk_text_header_test_() ->
         "uitr?=",
         mk_text_header(
           "Subject",
-          "åäötwequiiiirrrweyqruyqitrrqw"
+          "Ã¥Ã¤Ã¶twequiiiirrrweyqruyqitrrqw"
           "eruitwqeeerwqeurtwuietrriqweeeeeqeiuurrrrrrrweuiqtruiwetriwee"
           "eeyiirrrrrrrrrrrrruiweqtrweertweuitr")),
      
@@ -380,12 +381,12 @@ mk_text_header_test_() ->
                    " =?ISO-8859-1?Q?u?=",
                    mk_text_header(
                      "Subject",
-                     "åäötwequiiiirrrweyqruyqitrrqweruitwqeeerwqeu")),
+                     "Ã¥Ã¤Ã¶twequiiiirrrweyqruyqitrrqweruitwqeeerwqeu")),
      
      %% fits on 1 line
      ?_assertEqual("Subject: =?ISO-8859-1?Q?=E5=E4=F6twequ"
                    "iiiirrrweyqruyqitrrqweruitwqeeerwqe?=",
                    mk_text_header(
                      "Subject",
-                     "åäötwequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
+                     "Ã¥Ã¤Ã¶twequiiiirrrweyqruyqitrrqweruitwqeeerwqe"))
     ].
